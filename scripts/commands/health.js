@@ -49,34 +49,45 @@ module.exports = {
         // Get Uptime
         info.push({name: "Bot Uptime", value: `${botDays} days, ${botHours} hours, ${botMinutes} minutes, ${botSeconds} seconds`})
         info.push({name: `Host Uptime (${osName})`, value: `${hostDays} days, ${hostHours} hours, ${hostMinutes} minutes, ${hostSeconds} seconds`})
-        
+
         // Get RAM information
         const totalRam = os.totalmem();
         const ramGB = Math.ceil(totalRam / 1024 / 1024 / 1024);
-        
+
         info.push({name: "Total Memory", value: `${localization.format(ramGB)} GB`});
+
         // Get CPU information
         if (osName == "Linux") {
-            console.log("Check temperature")
-            exec('vcgencmd measure_temp', (err, stdout) => {
-                console.log("Checking temp: " + stdout + err)
-                if (!err) {
-                    const temp = stdout.replace("temp=","").replace("'C\n","");
-                    console.log("Alright! Lets log that freaking temperature." + temp)
-                    info.push({name: "CPU Temp.", value: `${temp}°C`});
-                } else {
-                    console.log(err.message);
-                }
-            });   
+            console.log("Check temperature");
+            const getTemperature = () => {
+                return new Promise((resolve, reject) => {
+                    exec('vcgencmd measure_temp', (err, stdout) => {
+                        if (!err) {
+                            const temp = stdout.replace("temp=", "").replace("'C\n", "");
+                            resolve(temp);
+                        } else {
+                            reject(err);
+                        }
+                    });
+                });
+            };
+
+            try {
+                const temp = await getTemperature();
+                console.log("Alright! Let's log that freaking temperature." + temp);
+                info.push({ name: "CPU Temp.", value: `${temp}°C` });
+            } catch (err) {
+                console.log(err.message);
+            }
         } else {
-            console.log("Not Linux do not check temp")
+            console.log("Not Linux, do not check temp");
         }
-        
+
         // Reply with information
-        let embed = new EmbedBuilder()
-        embed.setTitle('Health Check')
-        embed.setColor("#c6995b")
-        embed.addFields(info)
+        let embed = new EmbedBuilder();
+        embed.setTitle('Health Check');
+        embed.setColor("#c6995b");
+        embed.addFields(info);
         embed.setTimestamp(Date.now()) // Set the timestamp to the current time
 
         await interaction.reply({embeds: [embed]});
