@@ -59,7 +59,7 @@ module.exports = {
         if (osName == "Linux") {
             console.log("Check temperature")
             exec('vcgencmd measure_temp', (err, stdout) => {
-                console.log("Checking temp: " + stdout)
+                console.log("Checking temp: " + stdout + err)
                 if (!err) {
                     const temp = stdout.replace("temp=","").replace("'C\n","");
                     info.push({name: "CPU Temp.", value: `${temp}°C`});
