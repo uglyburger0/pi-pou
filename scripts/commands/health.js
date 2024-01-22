@@ -56,13 +56,13 @@ module.exports = {
         
         info.push({name: "Total Memory", value: `${localization.format(ramGB)} GB`});
         // Get CPU information
-        if (osType == "Linux") {
-            exec('vcgencmd measure_temp', (err, stdout, stderr) => {
+        if (osName == "Linux") {
+            exec('vcgencmd measure_temp', (err, stdout) => {
                 if (!err) {
                     const temp = stdout.replace("temp=","").replace("'C\n","");
                     info.push({name: "CPU Temp.", value: `${temp}°C`});
                 } else {
-                    console.log(err);
+                    console.log(err.message);
                 }
             });   
         }
