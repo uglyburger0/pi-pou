@@ -57,6 +57,7 @@ module.exports = {
         info.push({name: "Total Memory", value: `${localization.format(ramGB)} GB`});
         // Get CPU information
         if (osName == "Linux") {
+            console.log("Check temperature")
             exec('vcgencmd measure_temp', (err, stdout) => {
                 if (!err) {
                     const temp = stdout.replace("temp=","").replace("'C\n","");
@@ -65,6 +66,8 @@ module.exports = {
                     console.log(err.message);
                 }
             });   
+        } else {
+            console.log("Not Linux do not check temp")
         }
         
         // Reply with information
