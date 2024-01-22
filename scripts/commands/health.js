@@ -61,6 +61,8 @@ module.exports = {
                 if (!err) {
                     const temp = stdout.replace("temp=","").replace("'C\n","");
                     info.push({name: "CPU Temp.", value: `${temp}°C`});
+                } else {
+                    console.log(err);
                 }
             });   
         }
