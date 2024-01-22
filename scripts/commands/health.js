@@ -62,6 +62,7 @@ module.exports = {
                 console.log("Checking temp: " + stdout + err)
                 if (!err) {
                     const temp = stdout.replace("temp=","").replace("'C\n","");
+                    console.log("Alright! Lets log that freaking temperature." + temp)
                     info.push({name: "CPU Temp.", value: `${temp}°C`});
                 } else {
                     console.log(err.message);
