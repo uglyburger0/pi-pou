@@ -1,3 +1,5 @@
+
+
 // Import "dotenv" for token stuff
 require('dotenv').config();
 
@@ -12,7 +14,7 @@ const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.
 const eventFiles = fs.readdirSync(eventPath).filter(file => file.endsWith('.js'));
 
 // Import "discord.js" for Discord.js API
-const {Client, Collection, Events, GatewayIntentBits, REST, Routes, Partials} = require('discord.js');
+const {Client, Collection, GatewayIntentBits} = require('discord.js');
 
 // Create new client (we will log in later)
 const client = new Client({

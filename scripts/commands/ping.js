@@ -1,14 +1,20 @@
-const { SlashCommandBuilder } = require('discord.js');
-const os = require('node:os');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const localization = new Intl.NumberFormat('en-US');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('ping')
         .setDescription('Pings the bot'),
     async execute(interaction) {
-        // Get OS information
-        const osType = os.type();
         // Reply with information
-        await interaction.reply({content: `Pong from ${osType}!`});
+        let embed = new EmbedBuilder()
+        embed.setTitle('Pong!')
+        embed.setColor("#c6995b")
+        embed.addFields(
+            {name: "API Latency", value: `${localization.format(Math.abs(interaction.client.ws.ping))}ms`},
+        )
+        embed.setTimestamp(Date.now()) // Set the timestamp to the current time
+
+        await interaction.reply({embeds: [embed]});
     }
 }
