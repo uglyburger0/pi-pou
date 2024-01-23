@@ -1,10 +1,10 @@
 # pi-pou
 pi-pou is a discord bot i made
 
-pi-pou can do things like:
-* talk
+# hosting pi-pou
+To install your dependancies, you're going to install  
 
-## `.env` Variables
+## `.env` variables
 | Name | Type |
 | -----| ---- |
 | `CLIENT_ID` | number |

@@ -58,7 +58,6 @@ module.exports = {
 
         // Get CPU information
         if (osName == "Linux") {
-            console.log("Check temperature");
             const getTemperature = () => {
                 return new Promise((resolve, reject) => {
                     exec('vcgencmd measure_temp', (err, stdout) => {
@@ -74,13 +73,10 @@ module.exports = {
 
             try {
                 const temp = await getTemperature();
-                console.log("Alright! Let's log that freaking temperature." + temp);
                 info.push({ name: "CPU Temp.", value: `${temp}°C` });
             } catch (err) {
                 console.log(err.message);
             }
-        } else {
-            console.log("Not Linux, do not check temp");
         }
 
         // Reply with information
