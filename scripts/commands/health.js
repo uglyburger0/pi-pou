@@ -54,10 +54,11 @@ module.exports = {
         // Get RAM information
         const totalRam = os.totalmem();
         const freeRam = os.freemem();
-        const freeRamGB = freeRam / 1024 / 1024 / 1024
+        const freeRamGB = (totalRam - freeRam) / 1024 / 1024 / 1024
         const ramGB = Math.ceil(totalRam / 1024 / 1024 / 1024);
+        const percent = localization.format(100 - ((freeRam / totalRam) * 100));
 
-        info.push({name: "Total Memory", value: `${localization.format(freeRamGB)} GB / ${localization.format(ramGB)} GB`});
+        info.push({name: "Total Memory", value: `${localization.format(freeRamGB)} GB / ${localization.format(ramGB)} GB (${percent}%)`});
 
         // Get CPU information
         if (osName == "Linux") {
