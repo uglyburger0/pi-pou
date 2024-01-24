@@ -56,7 +56,6 @@ module.exports = {
         rows.shift(); // remove first element (states wikitable)
 
         // for all rows;
-        console.log(rows)
         for (const row of rows) {
             if (row.includes('colspan')) {
                 continue;

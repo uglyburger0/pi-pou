@@ -17,12 +17,17 @@ for (const file of commandFiles) {
     commands.push(command.data.toJSON());
 }
 
+// Determine if development or main
+const args = process.argv.slice(2);
+const token = args.includes('--dev') ? process.env.DEV_DISCORD_TOKEN : process.env.DISCORD_TOKEN;
+const client = args.includes('--dev') ? process.env.DEV_CLIENT_ID : process.env.CLIENT_ID;
+
 // Push to Discord
-const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+const rest = new REST({ version: '10' }).setToken(token);
 console.log('Started deploying application (/) commands.');
 
 rest.put(
-    Routes.applicationCommands(process.env.CLIENT_ID),
+    Routes.applicationCommands(client),
     { body: commands }
 )
 .then(() => console.log('Successfully registered application (/) commands.'))

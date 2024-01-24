@@ -44,5 +44,9 @@ for (const file of eventFiles) {
 	}
 }
 
+// Determine if development or main
+const args = process.argv.slice(2);
+const token = args.includes('--dev') ? process.env.DEV_DISCORD_TOKEN : process.env.DISCORD_TOKEN;
+
 // Log in to Discord using token
-client.login(process.env.DISCORD_TOKEN)
+client.login(token)
