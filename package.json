@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "start-dev": "node index.js --dev",
-    "deploy": "node initialize.js"
+    "deploy": "node initialize.js",
+    "deploy-dev": "node initialize.js --dev"
   },
   "keywords": [],
   "author": "",
