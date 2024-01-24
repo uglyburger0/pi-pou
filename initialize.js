@@ -8,11 +8,19 @@ const commands = [] // These commands are global, and will be available across a
 
 // Chat commands
 const commandPath = path.join(__dirname, 'scripts', 'commands');
+const contextPath = path.join(__dirname, 'scripts', 'context');
 const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js'));
+const contextFiles = fs.readdirSync(contextPath).filter(file => file.endsWith('.js'));
 
 // Add to array of commands
 for (const file of commandFiles) {
     const filePath = path.join(commandPath, file);
+    const command = require(filePath);
+    commands.push(command.data.toJSON());
+}
+// Add context menu actions to array of commands
+for (const file of contextFiles) {
+    const filePath = path.join(contextPath, file);
     const command = require(filePath);
     commands.push(command.data.toJSON());
 }

@@ -6,7 +6,7 @@ const osType = os.type();
 
 // Localization
 const startTime = new Date();
-const localization = new Intl.NumberFormat('en-US');
+const localization = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -53,9 +53,11 @@ module.exports = {
 
         // Get RAM information
         const totalRam = os.totalmem();
+        const freeRam = os.freemem();
+        const freeRamGB = freeRam / 1024 / 1024 / 1024
         const ramGB = Math.ceil(totalRam / 1024 / 1024 / 1024);
 
-        info.push({name: "Total Memory", value: `${localization.format(ramGB)} GB`});
+        info.push({name: "Total Memory", value: `${localization.format(freeRamGB)} GB / ${localization.format(ramGB)} GB`});
 
         // Get CPU information
         if (osName == "Linux") {
