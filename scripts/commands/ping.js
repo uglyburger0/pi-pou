@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { EmbedColors } = require('../globals.js');
 const localization = new Intl.NumberFormat('en-US');
 
 module.exports = {
@@ -9,7 +10,7 @@ module.exports = {
         // Reply with information
         let embed = new EmbedBuilder()
         embed.setTitle('Pong!')
-        embed.setColor("#c6995b")
+        embed.setColor(EmbedColors.Default)
         embed.addFields(
             {name: "API Latency", value: `${localization.format(Math.abs(interaction.client.ws.ping))}ms`},
         )

@@ -1,5 +1,3 @@
-
-
 // Import "dotenv" for token stuff
 require('dotenv').config();
 

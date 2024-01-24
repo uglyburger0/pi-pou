@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { EmbedColors } = require('../globals.js');
 const os = require('node:os');
 const { exec } = require('node:child_process');
 const osType = os.type();
@@ -82,7 +83,7 @@ module.exports = {
         // Reply with information
         let embed = new EmbedBuilder();
         embed.setTitle('Health Check');
-        embed.setColor("#c6995b");
+        embed.setColor(EmbedColors.Default);
         embed.addFields(info);
         embed.setTimestamp(Date.now()) // Set the timestamp to the current time
 

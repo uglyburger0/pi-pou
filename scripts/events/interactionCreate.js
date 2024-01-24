@@ -1,4 +1,5 @@
 const { Events, InteractionType, EmbedBuilder } = require('discord.js');
+const { EmbedColors } = require('../globals.js');
 const path = require('node:path');
 
 module.exports = {
@@ -100,7 +101,7 @@ module.exports = {
                 // Create error log embed
                 const cutError = error.toString().substring(0, 500)
                 const embed = new EmbedBuilder()
-                    .setColor("#f73b3b")
+                    .setColor(EmbedColors.Error)
                     .setTitle("Error Log:")
                     .setDescription("There was a problem with command: `" + commandName + "`\n```console\n" + cutError + "```")
                     .setFooter({
