@@ -35,13 +35,13 @@ async function getBody() {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('larson')
-        .setDescription('Evaluate the current events of Daniel Larson'),
+        .setDescription('Evaluate the recent events of Daniel Larson'),
     async execute(interaction) {
         // Await response
         await interaction.deferReply();
         // Get body
         let body = await getBody();
-        
+
         // keep table
         let eventField = [];
 
