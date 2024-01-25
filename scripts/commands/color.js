@@ -28,7 +28,7 @@ module.exports = {
             }
             colorObject = Color(userColor);
         } catch (error) {
-            console.log('lol')
+            // I dont want it to do anything but i have no option
         }
 
         // If no valid color, generate random color
