@@ -25,6 +25,7 @@ const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
 		GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMessages,
         GatewayIntentBits.DirectMessages
     ]
 });
@@ -47,6 +48,9 @@ for (const file of contextFiles) {
     client.commands.set(command.data.name, command);
 }
 
+// For all of our buttons
+client.buttons = new Collection(); // We will store all buttons under here
+
 // For all of our events
 for (const file of eventFiles) {
 	const filePath = path.join(eventPath, file);
@@ -60,4 +64,5 @@ for (const file of eventFiles) {
 }
 
 // Log in to Discord using token
+global.client = client
 client.login(token)
