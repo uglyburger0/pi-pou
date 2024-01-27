@@ -16,7 +16,7 @@ async function DeleteNonLink(message) {
 }
 
 async function GetPouResponse(message) {
-    if (!development || message.channel.isDMBased()) return; // testing
+    if (development || message.channel.isDMBased()) return; // testing
     const guild = global.client.guilds.cache.get(message.guildId); if (!guild) return;
     const authorMember = guild.members.cache.get(message.author.id); if (!authorMember) return;
     if (!authorMember.permissions.has(PermissionFlagsBits.Administrator)) return;
