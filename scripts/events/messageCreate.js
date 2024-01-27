@@ -1,9 +1,9 @@
 const { Events, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
-const { Channels, EmbedColors } = require('../globals.js');
+const { Channels, EmbedColors, development } = require('../globals.js');
 const { openai, modPrompt, modTools } = require('../openai.js');
 
 async function DeleteNonLink(message) {
-    if (message.channelId != Channels['3008-servers']) return;
+    if (message.channelId != Channels['3008-servers'] || development) return;
     // if there is not a link in the message
     if (!message.content.match(/https:\/\/www\.roblox\.com\/share\?code=[a-zA-Z0-9]+&type=Server/g)) {
         // delete the message
@@ -16,6 +16,7 @@ async function DeleteNonLink(message) {
 }
 
 async function GetPouResponse(message) {
+    if (!development) return; // testing
     const guild = global.client.guilds.cache.get(message.guildId); if (!guild) return;
     const member = guild.members.cache.get(message.author.id); if (!member) return;
     if (!member.permissions.has(PermissionFlagsBits.Administrator)) return;

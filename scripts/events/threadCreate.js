@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { Channels } = require('../globals.js');
+const { Channels, development } = require('../globals.js');
 
 const emojis = {
     upvote: "<:upvote:975627835467247636>",
@@ -21,7 +21,7 @@ async function ReactToSuggestion(thread) {
 module.exports = {
 	name: Events.ThreadCreate,
 	async execute(thread, newlyCreated) {
-        if (!newlyCreated) return;
+        if (!newlyCreated || development) return;
         ReactToSuggestion(thread);
 	},
 };
