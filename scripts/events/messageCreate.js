@@ -16,7 +16,7 @@ async function DeleteNonLink(message) {
 }
 
 async function GetPouResponse(message) {
-    if (development || message.channel.isDMBased()) return; // testing
+    if (!development || message.channel.isDMBased()) return; // testing
     const guild = global.client.guilds.cache.get(message.guildId); if (!guild) return;
     const authorMember = guild.members.cache.get(message.author.id); if (!authorMember) return;
     if (!authorMember.permissions.has(PermissionFlagsBits.Administrator)) return;
@@ -43,12 +43,14 @@ async function GetPouResponse(message) {
     }
 
     // Let openai know
+    let conversation = [
+        {role: "system", content: modPrompt},
+        {role: "user", content: request}
+    ]
+
     await openai.chat.completions.create({
         model: "gpt-3.5-turbo-1106",
-        messages: [
-            {role: "system", content: modPrompt},
-            {role: "user", content: request}
-        ],
+        messages: conversation,
         tools: modTools,
         tool_choice: "auto"
     })
@@ -138,10 +140,8 @@ async function GetPouResponse(message) {
                     // find GuildMember object
                     const targetMember = await guild.members.fetch(responseTarget)
                     if (!targetMember) return;
+                    let acted = false;
 
-                    // act
-                    console.log(targetMember)
-                    
                     switch (action) {
                         case "kick":
                             console.log(`Actually kicking ${targetMember.user.username}`)
@@ -154,12 +154,28 @@ async function GetPouResponse(message) {
                             if (timeoutDuration < 0) {
                                 timeoutDuration = 2419200000 // 28 days
                             }
-                            targetMember.disableCommunicationUntil(Date.now() + timeoutDuration, `${args.reason}`)
+                            await targetMember.disableCommunicationUntil(Date.now() + timeoutDuration, `${args.reason}`)
+                            .then(() => acted = true)
                             .catch(error => console.log('Could not timeout user: ', error));
                             console.log(`Actually timing out ${targetMember.user.username}`)
                             break;
                         default:
                             break;
+                    }
+
+                    if (acted) {
+                        // Add response to conversation
+                        conversation.push(pouMessage)
+                        // Generate one last GPT response with verification
+                        let finalResponse = await openai.chat.completions.create({
+                            model: "gpt-3.5-turbo-1106",
+                            messages: conversation,
+                            tool_choice: "none"
+                        })
+                        .then(response => {
+                            let finalReply = response.choices[0].message
+                            message.reply({ content: finalReply.content })
+                        })
                     }
                 }
 
