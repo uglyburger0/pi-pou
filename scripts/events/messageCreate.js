@@ -1,6 +1,6 @@
 const { Events, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
 const { Channels, EmbedColors, development } = require('../globals.js');
-const { openai, modPrompt, modTools } = require('../openai.js');
+const { openai, modPrompt, modPostPrompt, modTools } = require('../openai.js');
 
 async function DeleteNonLink(message) {
     if (message.channelId != Channels['3008-servers'] || development) return;
@@ -136,17 +136,24 @@ async function GetPouResponse(message) {
                 .addComponents(buttons)
 
                 // Local function for acting upon
-                async function actOnUser(actionId) {
+                async function actOnUser(actionId, buttonAction) {
                     // find GuildMember object
                     const targetMember = await guild.members.fetch(responseTarget)
+                    .catch();
                     if (!targetMember) return;
                     let acted = false;
 
-                    switch (action) {
+                    switch (buttonAction) {
                         case "kick":
+                            await targetMember.kick(args.reason)
+                            .then(() => acted = true)
+                            .catch(error => console.log('Could not kick user: ', error));
                             console.log(`Actually kicking ${targetMember.user.username}`)
                             break;
                         case "ban":
+                            await targetMember.ban({reason: args.reason})
+                            .then(() => acted = true)
+                            .catch(error => console.log('Could not ban user: ', error));
                             console.log(`Actually banning ${targetMember.user.username}`)
                             break;
                         case "timeout_user":
@@ -166,15 +173,29 @@ async function GetPouResponse(message) {
                     if (acted) {
                         // Add response to conversation
                         conversation.push(pouMessage)
+                        conversation.push(
+                            {
+                                tool_call_id: pouMessage.tool_calls[0].id,
+                                role: "tool",
+                                name: actionId,
+                                content: JSON.stringify(
+                                    {
+                                        user: targetMember.nickname ? targetMember.nickname : targetMember.user.username,
+                                        action: buttonAction,
+                                        reason: args.reason
+                                    }
+                                )
+                            }
+                        )
+                        conversation[0].content = modPostPrompt;
                         // Generate one last GPT response with verification
-                        let finalResponse = await openai.chat.completions.create({
+                        await openai.chat.completions.create({
                             model: "gpt-3.5-turbo-1106",
-                            messages: conversation,
-                            tool_choice: "none"
+                            messages: conversation
                         })
                         .then(response => {
                             let finalReply = response.choices[0].message
-                            message.reply({ content: finalReply.content })
+                            message.reply({ content: finalReply.content.toLowerCase() })
                         })
                     }
                 }
@@ -186,15 +207,19 @@ async function GetPouResponse(message) {
                     const collectorFilter = i => i.user.id === message.author.id;
                     let sentDm = await dm.send({ embeds: [embed], components: [row] })
                     try {
-                        const confirmation = await sentDm.awaitMessageComponent({ filter: collectorFilter, time: 20_000 });
+                        const confirmation = await sentDm.awaitMessageComponent({ filter: collectorFilter, time: 35_000 });
+                        
                         // If they accept, do the action
                         if (confirmation.customId == "mod_accept") {
                             message.react('<:pou:1200297209460178994>');
-                            actOnUser(confirmation.customId)
+                            actOnUser(confirmation.customId, action)
                             await confirmation.update({ content: `Successfully acted \`${action}\` against <@${responseTarget}>`, components: [], embeds: [] })
+                        
                         } else if (confirmation.customId == "mod_accept_secondary") {
                             message.react('<:pou:1200297209460178994>');
+                            actOnUser(confirmation.customId, oppositeAction)
                             await confirmation.update({ content: `Successfully acted \`${oppositeAction}\` against <@${responseTarget}>`, components: [], embeds: [] })
+                        
                         } else if (confirmation.customId == "mod_deny") {
                             await confirmation.update({ content: `Cancelled act \`${action}\` against <@${responseTarget}>`, components: [], embeds: [] })
                             // Delete the DM after 5 seconds
@@ -202,6 +227,7 @@ async function GetPouResponse(message) {
                                 await sentDm.delete()
                                 .catch();
                             }, 5_000);
+
                         }
                     } catch (error) {
                         await sentDm.delete()
