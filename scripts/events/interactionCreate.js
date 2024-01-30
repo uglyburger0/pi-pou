@@ -16,7 +16,7 @@ module.exports = {
                     const subcommand = interaction.options.getSubcommand(false)
     
                     // Determine file path to require `execute` function
-                    if (subcommand) {
+                    if (subcommand && (interaction.commandName != "music")) {
                         // Get file path
                         if (subcommandGroup) {
                             filePath = path.join(__dirname, "..", "commands", interaction.commandName, subcommandGroup,`${subcommand}.js`);

@@ -9,13 +9,13 @@ const emojis = {
 async function ReactToSuggestion(thread) {
     if (thread.parentId != Channels['3008-suggestions']) return;
     // get starting message
-    await thread.fetchStarterMessage().then(msg => {
+    await thread.messages.fetch(thread.id).then(msg => {
         // react with 2 emojis
         msg.react(emojis.upvote)
         .then(() => msg.react(emojis.downvote))
-        .catch(error => console.log('Could not fully react to suggestion: ', error));
+        .catch(error => console.log('Could not fully react to suggestion: ', thread.id, error));
     })
-    .catch(error => console.log('Could not fetch starter message: ', error));
+    .catch(error => console.log('Could not fetch starter message for suggestion ID: ' + thread.id));
 }
 
 module.exports = {
