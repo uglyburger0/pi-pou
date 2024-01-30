@@ -12,7 +12,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("music")
         .setDescription("Music/sound related commands")
-        .setDMPermissions(false)
+        .setDMPermission(false)
         .setDefaultMemberPermissions('0')
 
         .addSubcommandGroup(group => group
