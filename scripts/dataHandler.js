@@ -12,7 +12,10 @@ const DEFAULT_DATA = {
     "lastSave": Date.now(), // A timestamp of the previous save
     "data": {
         "servers": {},
-        "global": {}
+        "global": {
+            "readyCounter": 0,
+            "interactions": 0,
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 const { Events, InteractionType, EmbedBuilder } = require('discord.js');
 const { EmbedColors } = require('../globals.js');
+const DataHandler = require('../dataHandler.js');
 const path = require('node:path');
 
 const subcommandInScript = ["music", "data"]
@@ -77,6 +78,9 @@ module.exports = {
 				default:
 					break;
 			}
+            // Add to interaction count
+            const interactions = DataHandler.LoadPath(['data', 'global', 'interactions']) || 0;
+            DataHandler.SavePath(['data', 'global', 'interactions'], interactions + 1)
 		} catch (error) {
 			console.error(error)
 
