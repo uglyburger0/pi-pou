@@ -93,7 +93,6 @@ module.exports = {
             } catch (error) {
                 this.WriteRawDataToFile(DEFAULT_DATA)
                 console.log("Failed to find data. Created new data file")
-                reject(error)
             }
 
             // Autosave
