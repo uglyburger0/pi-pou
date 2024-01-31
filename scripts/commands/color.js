@@ -11,10 +11,10 @@ const localization = new Intl.NumberFormat('en-US', {'maximumFractionDigits': 0}
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('color')
-        .setDescription('Info on color')
+        .setDescription('Command to show colors. If no color is provided, a random color will be generated')
         .addStringOption(option => option
             .setName('color')
-            .setDescription('The color to get info on. Supports hex, rgb, and hsl.')
+            .setDescription('The color to get info on. Supports hex, RGB, and HSL')
         )
         ,
     async execute(interaction) {

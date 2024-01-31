@@ -12,7 +12,7 @@ module.exports = {
 
     data: new SlashCommandBuilder()
         .setName("roblox")
-        .setDescription("Roblox related commands.")
+        .setDescription("Roblox related commands")
 
         .addSubcommand(subcommand => subcommand
             .setName('devex')

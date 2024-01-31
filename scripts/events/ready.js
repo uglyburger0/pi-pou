@@ -1,5 +1,8 @@
 require('dotenv').config();
 const { Events, PresenceUpdateStatus, ActivityType } = require('discord.js');
+const DataHandler = require('../dataHandler.js');
+
+const counterPath = ['data', 'global', 'readyCounter'];
 
 module.exports = {
 	name: Events.ClientReady,
@@ -14,7 +17,13 @@ module.exports = {
 				state: "It's me, Pou!"
 			}]
 		})
-		console.log(JSON.stringify(status))
+		
+		// Initialize data handler
+		await DataHandler.Initialize();
+		// Increase the client's ready counter by 1
+		const counter = DataHandler.LoadPath(counterPath) || 0;
+		DataHandler.SavePath(counterPath, counter + 1)
+		DataHandler.WriteRawDataToFile();
 
 		// Log "we are ready!"
 		console.log(`Ready! Logged in as ${client.user.tag}`);

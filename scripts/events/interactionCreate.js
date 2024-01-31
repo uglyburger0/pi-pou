@@ -2,6 +2,8 @@ const { Events, InteractionType, EmbedBuilder } = require('discord.js');
 const { EmbedColors } = require('../globals.js');
 const path = require('node:path');
 
+const subcommandInScript = ["music", "data"]
+
 module.exports = {
 	name: Events.InteractionCreate,
 	async execute(interaction) {
@@ -16,7 +18,7 @@ module.exports = {
                     const subcommand = interaction.options.getSubcommand(false)
     
                     // Determine file path to require `execute` function
-                    if (subcommand && (interaction.commandName != "music")) {
+                    if (subcommand && !subcommandInScript.includes(interaction.commandName)) {
                         // Get file path
                         if (subcommandGroup) {
                             filePath = path.join(__dirname, "..", "commands", interaction.commandName, subcommandGroup,`${subcommand}.js`);

@@ -1,5 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { EmbedColors } = require('../globals.js');
+const DataHandler = require('../dataHandler.js');
+const fs = require('node:fs');
 const os = require('node:os');
 const { exec } = require('node:child_process');
 const osType = os.type();
@@ -26,6 +28,11 @@ module.exports = {
         const hostHours = Math.floor(hostUptime / 3600) % 24;
         const hostMinutes = Math.floor(hostUptime / 60) % 60;
         const hostSeconds = Math.floor(hostUptime % 60);
+
+        // Get settings size
+        const settingsSize = fs.statSync(DataHandler.data_path).size;
+        const lastSaved = DataHandler.GetData().lastSave; // Milliseconds
+        const readyCounter = DataHandler.LoadPath(['data', 'global', 'readyCounter']) || 0;
 
         // Store information as a list (will be added onto a field later)
         let info = [];
@@ -60,6 +67,10 @@ module.exports = {
 
         info.push({name: "Total Memory", value: `${localization.format(freeRamGB)} GB / ${localization.format(ramGB)} GB (${percent}%)`});
 
+        // Data related
+        info.push({name: "Data Size", value: `${localization.format(settingsSize / 1024)} KB`, inline: true});
+        info.push({name: "Last Save", value: `<t:${Math.floor(lastSaved/1000)}:t>`, inline: true});
+
         // Get CPU information
         if (osName == "Linux") {
             const getTemperature = () => {
@@ -77,7 +88,7 @@ module.exports = {
 
             try {
                 const temp = await getTemperature();
-                info.push({ name: "CPU Temp.", value: `${temp}°C` });
+                info.push({ name: "CPU Temp.", value: `${temp}°C`, inline: false });
             } catch (err) {
                 console.log(err.message);
             }
@@ -88,6 +99,7 @@ module.exports = {
         embed.setTitle('Health Check');
         embed.setColor(EmbedColors.Default);
         embed.addFields(info);
+        embed.setFooter({text: `${interaction.client.user.username} has launched ${readyCounter} times`});
         embed.setTimestamp(Date.now()) // Set the timestamp to the current time
 
         await interaction.reply({embeds: [embed]});
