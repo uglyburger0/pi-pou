@@ -3,15 +3,19 @@ const { Channels, EmbedColors, development } = require('../globals.js');
 const { openai, modPrompt, modPostPrompt, modTools } = require('../openai.js');
 
 async function DeleteNonLink(message) {
-    if (message.channelId != Channels['3008-servers'] || development) return;
-    // if there is not a link in the message
-    if (!message.content.match(/https:\/\/www\.roblox\.com\/share\?code=[a-zA-Z0-9]+&type=Server/g)) {
-        // delete the message
-        try {
-            message.delete();
-        } catch {
-            console.log(`Could not delete 3008-server message ${message.id}`)
+    try {
+        if (message.channelId != Channels['3008-servers'] || development) return;
+        // if there is not a link in the message
+        if (!message.content.match(/https:\/\/www\.roblox\.com\/share\?code=[a-zA-Z0-9]+&type=Server/g)) {
+            // delete the message
+            try {
+                message.delete();
+            } catch {
+                console.log(`Could not delete 3008-server message ${message.id}`)
+            }
         }
+    } catch {
+        console.log(`Could not delete 3008-server message ${message.id}`)
     }
 }
 

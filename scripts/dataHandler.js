@@ -100,7 +100,8 @@ module.exports = {
 
             // Autosave
             setInterval(() => {
-                fs.writeFileSync(DATA_PATH, JSON.stringify(data));
+                this.WriteRawDataToFile();
+                console.log("(DATA) Autosave")
             }, SAVE_INTERVAL);
 
             resolve(data);
